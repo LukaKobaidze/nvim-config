@@ -9,7 +9,7 @@ return {
           command = "eslint_d",  -- Optional: use eslint_d for faster linting
         }),
         null_ls.builtins.formatting.prettier.with({
-          filetypes = { "javascript", "typescript", "css", "html", "javascriptreact", "typescriptreact" }
+          filetypes = { "css", "sass", "scss", "javascript", "typescript", "css", "html", "javascriptreact", "typescriptreact" }
         }),
       },
     })

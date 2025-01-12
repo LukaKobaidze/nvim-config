@@ -32,3 +32,5 @@ vim.diagnostic.config({
   },
 })
 vim.api.nvim_set_keymap("n", "<leader>er", ":lua vim.diagnostic.open_float()<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<C-j>", "<C-d>zz", { noremap = true, silent = true })
+vim.keymap.set("n", "<C-k>", "<C-u>zz", { noremap = true, silent = true })
