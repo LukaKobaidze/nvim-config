@@ -37,8 +37,11 @@ local function create_floating_window(opts)
 
   -- Create the floating window
   local win = vim.api.nvim_open_win(buf, true, win_config)
+  vim.cmd([[highlight MyFloat guibg=NONE]]) -- Transparent background
+  vim.cmd([[highlight link MyFloatBorder TelescopeBorder]]) -- Link border to TelescopeBorder
+  vim.api.nvim_win_set_option(win, "winhl", "Normal:MyFloat,FloatBorder:MyFloatBorder")
 
-  return { buf = buf, win = win }
+  return { buf = buf, win = win } 
 end
 
 local toggle_terminal = function()
