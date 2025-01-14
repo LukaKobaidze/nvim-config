@@ -1,0 +1,8 @@
+vim.keymap.set("n", "<Space>", "<Nop>", { noremap = true, silent = true })
+vim.keymap.set("v", "<Space>", "<Nop>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "r", "<Nop>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>er", ":lua vim.diagnostic.open_float()<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<C-j>", "<C-d>zz", { noremap = true, silent = true })
+vim.keymap.set("n", "<C-k>", "<C-u>zz", { noremap = true, silent = true })
+vim.keymap.set("n", "n", "nzz", { noremap = true, silent = true })
+vim.keymap.set("n", "N", "Nzz", { noremap = true, silent = true })

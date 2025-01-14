@@ -150,6 +150,12 @@ ins_left {
 
 
 -- Add components to right sections
+
+ins_right {
+  'filetype',
+  color = { gui = 'bold' }
+}
+
 ins_right {
   'o:encoding', -- option component same as &encoding in viml
   fmt = string.upper, -- I'm not sure why it's upper case either ;)
@@ -173,7 +179,7 @@ ins_right {
 ins_right {
   'diff',
   -- Is it me or the symbol for modified us really weird
-  symbols = { added = ' ', modified = '� ', removed = ' ' },
+  symbols = { added = '+', modified = '±', removed = '-' },
   diff_color = {
     added = { fg = colors.green },
     modified = { fg = colors.orange },
