@@ -3,6 +3,7 @@ vim.wo.relativenumber = true
 require("config.lazy")
 require("custom.floaterminal")
 vim.opt.termguicolors = true
+vim.opt.hlsearch = false
 
 vim.o.fillchars = "eob: "
 vim.api.nvim_set_option('winblend', 0)
@@ -36,3 +37,10 @@ vim.keymap.set("n", "<C-j>", "<C-d>zz", { noremap = true, silent = true })
 vim.keymap.set("n", "<C-k>", "<C-u>zz", { noremap = true, silent = true })
 vim.keymap.set("n", "n", "nzz", { noremap = true, silent = true })
 vim.keymap.set("n", "N", "Nzz", { noremap = true, silent = true })
+-- Debugging: print when auto-save happens
+vim.api.nvim_create_autocmd({ "FocusLost", "BufLeave" }, {
+  pattern = "*",  -- Apply to all buffers
+  callback = function()
+    vim.cmd("silent! write")
+  end
+})
