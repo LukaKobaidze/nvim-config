@@ -1,5 +1,6 @@
 require("config.lazy")
 require("custom.floaterminal")
+require("custom.keymaps")
 vim.wo.number = true
 vim.wo.relativenumber = true
 vim.opt.termguicolors = true
