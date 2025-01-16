@@ -1,12 +1,19 @@
 return {
-  "neovim/nvim-lspconfig",
-  config = function()
-    local lspconfig = require("lspconfig")
+	"neovim/nvim-lspconfig",
+	dependencies = {
+		"hrsh7th/cmp-nvim-lsp",
+	},
+	config = function()
+		local lspconfig = require("lspconfig")
+		local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
-    lspconfig.ts_ls.setup({
-      on_attach = function(client, bufnr)
-        vim.diagnostic.open_float()
-      end,
-    })
-  end
+		local capabilities = cmp_nvim_lsp.default_capabilities()
+
+		lspconfig.ts_ls.setup({
+			capabilities = capabilities,
+			on_attach = function(client, bufnr)
+				vim.diagnostic.open_float()
+			end,
+		})
+	end,
 }

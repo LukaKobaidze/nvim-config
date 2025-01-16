@@ -33,6 +33,8 @@ local function create_floating_window(opts)
     row = row,
     style = "minimal", -- No borders or extra UI elements
     border = "rounded",
+    title = " Terminal ",
+    title_pos = "center"
   }
 
   -- Create the floating window
