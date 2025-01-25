@@ -8,11 +8,13 @@ return {
 		"saadparwaiz1/cmp_luasnip", -- Snippet completions
 		"L3MON4D3/LuaSnip", -- Snippet engine
 		"rafamadriz/friendly-snippets", -- Predefined snippets
+		"onsails/lspkind.nvim", -- Icons
 	},
 	config = function()
 		-- Configuration for nvim-cmp
 		local cmp = require("cmp")
 		local luasnip = require("luasnip")
+		local lspkind = require("lspkind")
 
 		require("luasnip.loaders.from_vscode").lazy_load()
 
@@ -62,6 +64,17 @@ return {
 				{ name = "buffer" }, -- Buffer completions
 				{ name = "path" }, -- Path completions
 			}),
+			-- Enable icons with lspkind
+			formatting = {
+				fields = { "kind", "abbr", "menu" },
+				format = function(_, vim_item)
+					local kind = vim_item.kind
+
+					vim_item.kind = lspkind.symbolic(vim_item.kind, { mode = "symbol" })
+					vim_item.menu = " " .. kind
+					return vim_item
+				end,
+			},
 		})
 
 		-- Use buffer source for `/` (search) and `:` (command line)

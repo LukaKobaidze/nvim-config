@@ -122,7 +122,7 @@ ins_left({
 ins_left({
 	"filename",
 	cond = conditions.buffer_not_empty,
-	color = { fg = colors.magenta, gui = "bold" },
+	color = { fg = colors.red, gui = "bold" },
 })
 
 ins_left({ "location" })
@@ -147,7 +147,6 @@ ins_left({
 		return "%="
 	end,
 })
-
 
 -- Add components to right sections
 

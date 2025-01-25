@@ -15,5 +15,7 @@ return {
 				vim.diagnostic.open_float()
 			end,
 		})
+
+		lspconfig.cssls.setup({ capabilities = capabilities })
 	end,
 }
