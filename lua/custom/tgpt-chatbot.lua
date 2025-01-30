@@ -32,7 +32,7 @@ local function create_floating_window(opts)
 		row = row,
 		style = "minimal", -- No borders or extra UI elements
 		border = "rounded",
-		title = " Terminal ",
+		title = " AI ",
 		title_pos = "center",
 	}
 
@@ -50,10 +50,15 @@ local toggle_terminal = function()
 		state.floating = create_floating_window({ buf = state.floating.buf })
 		if vim.bo[state.floating.buf].buftype ~= "terminal" then
 			vim.cmd.terminal()
+
+			local terminal_job_id = vim.b.terminal_job_id
+			local command = "tgpt --provider duckduckgo --model gpt-4o-mini --interactive\n"
+			vim.api.nvim_chan_send(terminal_job_id, command)
 		end
 	else
 		vim.api.nvim_win_hide(state.floating.win)
 	end
+
 	if vim.api.nvim_get_mode().mode ~= "t" then
 		vim.cmd("normal i")
 	end
@@ -63,4 +68,4 @@ end
 -- Create a floating window with default dimensions
 vim.api.nvim_create_user_command("Floaterminal", toggle_terminal, {})
 
-vim.keymap.set("n", "<leader>te", toggle_terminal)
+vim.keymap.set("n", "<leader>ai", toggle_terminal)
