@@ -7,7 +7,6 @@ return {
 		"hrsh7th/cmp-nvim-lua", -- Neovim Lua API completions
 		"saadparwaiz1/cmp_luasnip", -- Snippet completions
 		"L3MON4D3/LuaSnip", -- Snippet engine
-		"rafamadriz/friendly-snippets", -- Predefined snippets
 		"onsails/lspkind.nvim", -- Icons
 	},
 	config = function()
@@ -15,8 +14,6 @@ return {
 		local cmp = require("cmp")
 		local luasnip = require("luasnip")
 		local lspkind = require("lspkind")
-
-		require("luasnip.loaders.from_vscode").lazy_load()
 
 		cmp.setup({
 			window = {
