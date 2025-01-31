@@ -1,6 +1,7 @@
 local colors = {
 	bg = "",
 	fg = "#cfbbbd",
+	fglow = "#9f8c8e",
 	yellow = "#ECBE7B",
 	cyan = "#008080",
 	darkblue = "#081633",
@@ -15,10 +16,10 @@ local colors = {
 local mode_color = function()
 	local colors = {
 		n = colors.red,
-		i = colors.green,
-		v = colors.blue,
-		[""] = colors.blue,
-		V = colors.blue,
+		i = colors.blue,
+		v = colors.green,
+		[""] = colors.green,
+		V = colors.green,
 		c = colors.magenta,
 		no = colors.red,
 		s = colors.orange,
@@ -105,37 +106,50 @@ ins_left({
 	color = function()
 		return { bg = mode_color(), fg = "#000000", gui = "bold" }
 	end,
-	padding = { left = 1, right = 1 }, -- We don't need space before this
+	padding = { left = 1, right = 1 },
 })
 
 ins_left({
-	-- mode component
 	function()
-		return " "
+		local cwd_dir= vim.fn.fnamemodify(vim.fn.expand("%:h"), ":.")
+
+		return cwd_dir .. "/" 
+	end,
+	color = { fg = colors.fglow },
+	padding = { left = 1, right = 0 },
+})
+
+ins_left({
+	function()
+		local filename
+
+		filename = vim.fn.expand("%:t")
+		if filename == nil or filename == "" then
+			filename = vim.bo.filetype
+		end
+
+		return filename
+	end,
+	color = { gui = "bold" },
+	padding = { left = 0 },
+})
+
+ins_left({
+	function()
+		local devicons = require("nvim-web-devicons")
+		local icon = devicons.get_icon(vim.fn.expand("%:t")) or devicons.get_icon_by_filetype(vim.bo.filetype) or ""
+
+		return icon
 	end,
 	color = function()
-		return {
-			fg = mode_color(),
-			gui = "bold",
-		}
+		local filename = vim.fn.expand("%:t")
+		local _, color = require("nvim-web-devicons").get_icon_color(filename)
+
+		return { fg = color }
 	end,
-	padding = { right = 1 },
-})
-
-ins_left({
-	-- filesize component
-	"filesize",
-	cond = conditions.buffer_not_empty,
-})
-
-ins_left({
-	"filename",
-	cond = conditions.buffer_not_empty,
-	color = { fg = colors.red, gui = "bold" },
 })
 
 ins_left({ "location" })
-
 ins_left({ "progress", color = { fg = colors.fg, gui = "bold" } })
 
 ins_left({
@@ -149,57 +163,83 @@ ins_left({
 	},
 })
 
--- Insert mid section. You can make any number of sections in neovim :)
--- for lualine it's any number greater then 2
+-- Insert mid section.
 ins_left({
 	function()
 		return "%="
 	end,
 })
 
--- Add components to right sections
+ins_left({
+	function()
+		local project = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
 
-ins_right({
-	"filetype",
+		return "  " .. project
+	end,
 	color = { gui = "bold" },
 })
+
+-- Add components to right sections
+
+ins_right({ "filesize", padding = { right = 2 } })
 
 ins_right({
 	"o:encoding", -- option component same as &encoding in viml
 	fmt = string.upper, -- I'm not sure why it's upper case either ;)
-	cond = conditions.hide_in_width,
-	color = { fg = colors.green, gui = "bold" },
-})
-
-ins_right({
-	"fileformat",
-	fmt = string.upper,
-	icons_enabled = false, -- I think icons are cool but Eviline doesn't have them. sigh
-	color = { fg = colors.green, gui = "bold" },
-})
-
-ins_right({
-	"branch",
-	icon = "",
-	color = { fg = colors.violet, gui = "bold" },
+	color = { gui = "bold" },
+	padding = { right = 2 },
 })
 
 ins_right({
 	"diff",
-	-- Is it me or the symbol for modified us really weird
-	symbols = { added = "+", modified = "±", removed = "-" },
+	symbols = { added = "󰐖 ", modified = "󰦓 ", removed = "󰍵 " },
 	diff_color = {
 		added = { fg = colors.green },
 		modified = { fg = colors.orange },
 		removed = { fg = colors.red },
 	},
 	cond = conditions.hide_in_width,
+	padding = { left = 0, right = 2 },
+})
+
+ins_right({
+	function()
+		local branch = vim.b.gitsigns_status_dict and vim.b.gitsigns_status_dict.head
+
+		if not branch or branch == "" then
+			return ""
+		end
+
+		return branch .. " "
+	end,
+	color = function()
+		return { bg = mode_color(), fg = "#000000", gui = "bold" }
+	end,
+	padding = { left = 1, right = 1 },
+})
+
+local is_branch = function()
+	local branch = vim.b.gitsigns_status_dict and vim.b.gitsigns_status_dict.head
+
+	if branch then
+		return false
+	end
+	return true
+end
+
+ins_right({
+	"fileformat",
+	fmt = string.upper,
+	icons_enabled = false, -- I think icons are cool but Eviline doesn't have them. sigh
+	cond = is_branch,
+	color = { fg = colors.green, gui = "bold" },
 })
 
 ins_right({
 	function()
 		return "▊"
 	end,
+	cond = is_branch,
 	color = function()
 		return { fg = mode_color() }
 	end,
