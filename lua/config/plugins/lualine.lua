@@ -12,6 +12,33 @@ local colors = {
 	red = "#ec5f67",
 }
 
+local mode_color = function()
+	local colors = {
+		n = colors.red,
+		i = colors.green,
+		v = colors.blue,
+		[""] = colors.blue,
+		V = colors.blue,
+		c = colors.magenta,
+		no = colors.red,
+		s = colors.orange,
+		S = colors.orange,
+		[""] = colors.orange,
+		ic = colors.yellow,
+		R = colors.violet,
+		Rv = colors.violet,
+		cv = colors.red,
+		ce = colors.red,
+		r = colors.cyan,
+		rm = colors.cyan,
+		["r?"] = colors.cyan,
+		["!"] = colors.red,
+		t = colors.red,
+	}
+
+	return colors[vim.fn.mode()]
+end
+
 local conditions = {
 	buffer_not_empty = function()
 		return vim.fn.empty(vim.fn.expand("%:t")) ~= 1
@@ -73,42 +100,24 @@ end
 
 ins_left({
 	function()
-		return "▊"
+		return vim.fn.mode()
 	end,
-	color = { fg = colors.red }, -- Sets highlighting of component
-	padding = { left = 0, right = 1 }, -- We don't need space before this
+	color = function()
+		return { bg = mode_color(), fg = "#000000", gui = "bold" }
+	end,
+	padding = { left = 1, right = 1 }, -- We don't need space before this
 })
 
 ins_left({
 	-- mode component
 	function()
-		return ""
+		return " "
 	end,
 	color = function()
-		-- auto change color according to neovims mode
-		local mode_color = {
-			n = colors.red,
-			i = colors.green,
-			v = colors.blue,
-			[""] = colors.blue,
-			V = colors.blue,
-			c = colors.magenta,
-			no = colors.red,
-			s = colors.orange,
-			S = colors.orange,
-			[""] = colors.orange,
-			ic = colors.yellow,
-			R = colors.violet,
-			Rv = colors.violet,
-			cv = colors.red,
-			ce = colors.red,
-			r = colors.cyan,
-			rm = colors.cyan,
-			["r?"] = colors.cyan,
-			["!"] = colors.red,
-			t = colors.red,
+		return {
+			fg = mode_color(),
+			gui = "bold",
 		}
-		return { fg = mode_color[vim.fn.mode()] }
 	end,
 	padding = { right = 1 },
 })
@@ -191,7 +200,9 @@ ins_right({
 	function()
 		return "▊"
 	end,
-	color = { fg = colors.red },
+	color = function()
+		return { fg = mode_color() }
+	end,
 	padding = { left = 1 },
 })
 
