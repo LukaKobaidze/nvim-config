@@ -1,4 +1,4 @@
-local border = "#c678dd"
+local primary = "#c678dd"
 vim.opt.termguicolors = true
 vim.api.nvim_set_hl(0, "Cursor", { bg = "white", fg = "black" })
 vim.api.nvim_set_option("winblend", 0)
