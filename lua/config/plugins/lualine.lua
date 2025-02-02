@@ -67,6 +67,7 @@ local config = {
 			normal = { c = { fg = colors.fg, bg = colors.bg } },
 			inactive = { c = { fg = colors.fg, bg = colors.bg } },
 		},
+		globalstatus = true,
 	},
 	sections = {
 		-- these are to remove the defaults
@@ -108,15 +109,31 @@ ins_left({
 	end,
 	padding = { left = 1, right = 1 },
 })
+ins_left({
+	function()
+		return " "
+	end,
+	cond = function()
+		return vim.o.columns <= 90
+	end,
+})
 
 ins_left({
 	function()
-		local cwd_dir= vim.fn.fnamemodify(vim.fn.expand("%:h"), ":.")
+		local max_length = math.floor(vim.o.columns * 0.3)
+		local cwd_dir = vim.fn.fnamemodify(vim.fn.expand("%:h"), ":.")
 
-		return cwd_dir .. "/" 
+		if #cwd_dir > max_length then
+			cwd_dir = "<" .. cwd_dir:sub(-max_length + 1)
+		end
+
+		return cwd_dir .. "/"
 	end,
 	color = { fg = colors.fglow },
 	padding = { left = 1, right = 0 },
+	cond = function()
+		return vim.o.columns > 90
+	end,
 })
 
 ins_left({
@@ -177,17 +194,27 @@ ins_left({
 		return "  " .. project
 	end,
 	color = { gui = "bold" },
+	padding = { right = 2 },
 })
 
 -- Add components to right sections
 
-ins_right({ "filesize", padding = { right = 2 } })
+ins_right({
+	"filesize",
+	padding = { right = 2 },
+	cond = function()
+		return vim.o.columns > 90
+	end,
+})
 
 ins_right({
 	"o:encoding", -- option component same as &encoding in viml
 	fmt = string.upper, -- I'm not sure why it's upper case either ;)
 	color = { gui = "bold" },
 	padding = { right = 2 },
+	cond = function()
+		return vim.o.columns > 90
+	end,
 })
 
 ins_right({

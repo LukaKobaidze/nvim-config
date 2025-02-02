@@ -8,6 +8,7 @@ vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
 vim.opt.smartindent = true
 vim.opt.pumheight = 10
+vim.opt.laststatus = 3
 
 vim.diagnostic.config({
 	virtual_text = false,
