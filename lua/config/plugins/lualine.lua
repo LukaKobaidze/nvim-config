@@ -159,7 +159,11 @@ ins_left({
 			cwd_dir = "<" .. cwd_dir:sub(-max_length + 1)
 		end
 
-		return cwd_dir .. "/"
+		if cwd_dir ~= "" then
+			cwd_dir = cwd_dir .. "/"
+		end
+
+		return cwd_dir
 	end,
 	color = { fg = colors.fglow },
 	padding = { left = 0, right = 0 },
