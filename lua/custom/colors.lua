@@ -24,7 +24,7 @@ vim.api.nvim_set_hl(0, "CmpBorder", { fg = primary, bg = "NONE" })
 vim.api.nvim_set_hl(0, "PmenuThumb", { bg = primary })
 vim.api.nvim_set_hl(0, "PmenuSel", { bg = primary, fg = "#000000" })
 vim.api.nvim_set_hl(0, "LineNrAbove", { fg = "#506477" })
-vim.api.nvim_set_hl(0, "LineNr", { fg = "#ffffff" })
+vim.api.nvim_set_hl(0, "LineNr", { fg = primary })
 vim.api.nvim_set_hl(0, "LineNrBelow", { fg = "#506477" })
 
 vim.api.nvim_set_hl(0, "IndentLine", { fg = "#333333" })
