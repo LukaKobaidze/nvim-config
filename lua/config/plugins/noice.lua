@@ -1,15 +1,32 @@
 return {
-  "folke/noice.nvim",
-  event = "VeryLazy",
-  opts = {
-    -- add any options here
-  },
-  dependencies = {
-    -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-    "MunifTanjim/nui.nvim",
-    -- OPTIONAL:
-    --   `nvim-notify` is only needed, if you want to use the notification view.
-    --   If not available, we use `mini` as the fallback
-    "rcarriga/nvim-notify",
-    }
+	"folke/noice.nvim",
+	event = "VeryLazy",
+	opts = {
+		messages = {
+			view = "mini",
+			view_error = "mini",
+			view_warn = "mini",
+		},
+		notify = {
+			view = "mini",
+		},
+		popupmenu = {
+			enabled = false,
+		},
+		lsp = {
+			hover = {
+				enabled = false,
+			},
+			signature = {
+				enabled = false,
+			},
+		},
+		presents = {
+			lsp_doc_border = false,
+		},
+	},
+	dependencies = {
+		-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+		"MunifTanjim/nui.nvim",
+	},
 }

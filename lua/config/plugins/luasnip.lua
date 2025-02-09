@@ -14,6 +14,9 @@ return {
 		local filename = function()
 			return vim.fn.fnamemodify(vim.fn.expand("%"), ":t:r")
 		end
+		local directoryname = function()
+			return "directoryname"
+		end
 
 		ls.add_snippets("typescriptreact", {
 			s("tsxf", {
@@ -31,11 +34,25 @@ return {
 				f(filename),
 				t({ "Props) {", "" }),
 				t("  const { "),
-        i(3),
-        t({" } = props;", "", ""}),
+				i(3),
+				t({ " } = props;", "", "" }),
 				t("  return "),
 				i(1),
 				t({ "", "}" }),
+			}),
+		})
+
+		ls.add_snippets("typescript", {
+			s("reexport", {
+				t("import "),
+				f(directoryname),
+				t(" from './"),
+				f(directoryname),
+				t({ "';", "", "export * from './" }),
+				f(directoryname),
+				t({ "';", "export default " }),
+				f(directoryname),
+				t(";"),
 			}),
 		})
 	end,

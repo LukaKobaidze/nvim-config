@@ -13,6 +13,9 @@ return {
 			capabilities = capabilities,
 			on_attach = function(client, bufnr)
 				vim.diagnostic.open_float()
+				vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+					border = "rounded",
+				})
 			end,
 		})
 
