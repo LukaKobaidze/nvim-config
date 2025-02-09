@@ -40,6 +40,17 @@ local mode_color = function()
 	return colors[vim.fn.mode()]
 end
 
+local is_current_file_in_cwd = function()
+	local cwd = vim.fn.getcwd() -- Get the current working directory
+	local file_path = vim.fn.expand("%:p") -- Get the full absolute path of the current file
+
+	-- Ensure both paths end with a slash for accurate comparison
+	cwd = cwd:gsub("/$", "") .. "/"
+	file_path = file_path:gsub("/$", "") .. "/"
+
+	return file_path:sub(1, #cwd) == cwd
+end
+
 local conditions = {
 	buffer_not_empty = function()
 		return vim.fn.empty(vim.fn.expand("%:t")) ~= 1
@@ -109,19 +120,40 @@ ins_left({
 	end,
 	padding = { left = 1, right = 1 },
 })
+
 ins_left({
 	function()
 		return " "
 	end,
-	cond = function()
-		return vim.o.columns <= 90
+	padding = { left = 0, right = 0 },
+})
+
+ins_left({
+	function()
+		return vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
 	end,
+	cond = is_current_file_in_cwd,
+	padding = { left = 0, right = 0 },
+	color = { gui = "bold" },
+})
+
+ins_left({
+	function()
+		return "/"
+	end,
+	padding = { left = 0, right = 0 },
+	color = { fg = colors.fglow },
+	cond = is_current_file_in_cwd,
 })
 
 ins_left({
 	function()
 		local max_length = math.floor(vim.o.columns * 0.3)
 		local cwd_dir = vim.fn.fnamemodify(vim.fn.expand("%:h"), ":.")
+
+		if cwd_dir:match("^/") then
+			cwd_dir = cwd_dir:sub(2)
+		end
 
 		if #cwd_dir > max_length then
 			cwd_dir = "<" .. cwd_dir:sub(-max_length + 1)
@@ -130,7 +162,7 @@ ins_left({
 		return cwd_dir .. "/"
 	end,
 	color = { fg = colors.fglow },
-	padding = { left = 1, right = 0 },
+	padding = { left = 0, right = 0 },
 	cond = function()
 		return vim.o.columns > 90
 	end,
@@ -185,16 +217,6 @@ ins_left({
 	function()
 		return "%="
 	end,
-})
-
-ins_left({
-	function()
-		local project = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
-
-		return "  " .. project
-	end,
-	color = { gui = "bold" },
-	padding = { right = 2 },
 })
 
 -- Add components to right sections
