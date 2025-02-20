@@ -1,4 +1,3 @@
-
 local state = {
 	floating = {
 		buf = -1,
@@ -50,6 +49,10 @@ local toggle_terminal = function()
 		state.floating = create_floating_window({ buf = state.floating.buf })
 		if vim.bo[state.floating.buf].buftype ~= "terminal" then
 			vim.cmd.terminal()
+
+			local terminal_job_id = vim.b.terminal_job_id
+			local command = "tmux a\n"
+			vim.api.nvim_chan_send(terminal_job_id, command)
 		end
 	else
 		vim.api.nvim_win_hide(state.floating.win)
