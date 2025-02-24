@@ -29,11 +29,12 @@ return {
 			},
 			pickers = {
 				find_files = {
+					previewer = false,
 					theme = "dropdown",
 					find_command = { "rg", "--files", "--sortr=modified" },
 				},
 				live_grep = {
-					theme = "dropdown",
+					theme = "ivy",
 				},
 			},
 			extensions = {
@@ -48,10 +49,14 @@ return {
 		vim.keymap.set("n", "<leader>fc", function()
 			builtin.find_files({
 				cwd = vim.fn.stdpath("config"),
+				prompt_title = "Find Files (Config)",
 			})
 		end)
 		vim.keymap.set("n", "<leader>fo", function()
-			builtin.find_files({ cwd = "~/Documents/obsidian-notes/daily-notes" })
+			builtin.find_files({
+				cwd = "~/Documents/obsidian-notes/daily-notes",
+				prompt_title = "Find Files (Obsidian)",
+			})
 		end)
 	end,
 }
