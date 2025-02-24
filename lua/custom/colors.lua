@@ -16,6 +16,7 @@ vim.api.nvim_set_hl(0, "TelescopePreviewTitle", { fg = primary, bg = "none" })
 vim.api.nvim_set_hl(0, "TelescopeMatching", { fg = "#ec5f67" })
 vim.api.nvim_set_hl(0, "TelescopeNormal", { fg = "#DDDDDD" })
 vim.api.nvim_set_hl(0, "TelescopeSelection", { fg = "#ffffff", bg = "none", bold = true })
+vim.api.nvim_set_hl(0, "TroubleCount", { fg = "#ffffff", bg = "none", bold = true })
 vim.api.nvim_set_hl(0, "FloatTitle", { fg = primary, bg = "none" })
 vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
 	primary = "rounded", -- Add rounded border
