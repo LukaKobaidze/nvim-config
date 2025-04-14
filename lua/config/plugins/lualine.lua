@@ -11,6 +11,7 @@ local colors = {
 	magenta = "#c678dd",
 	blue = "#51afef",
 	red = "#ec5f67",
+	gray = "#c0c2ce",
 }
 
 local mode_color = function()
@@ -34,7 +35,7 @@ local mode_color = function()
 		rm = colors.cyan,
 		["r?"] = colors.cyan,
 		["!"] = colors.red,
-		t = colors.red,
+		t = colors.gray,
 	}
 
 	return colors[vim.fn.mode()]
@@ -43,6 +44,10 @@ end
 local is_current_file_in_cwd = function()
 	local cwd = vim.fn.getcwd() -- Get the current working directory
 	local file_path = vim.fn.expand("%:p") -- Get the full absolute path of the current file
+
+	if file_path:match("^oil://") then
+		file_path = file_path:gsub("^oil://", "")
+	end
 
 	-- Ensure both paths end with a slash for accurate comparison
 	cwd = cwd:gsub("/$", "") .. "/"
@@ -134,7 +139,8 @@ ins_left({
 	end,
 	cond = is_current_file_in_cwd,
 	padding = { left = 0, right = 0 },
-	color = { gui = "bold" },
+	--color = { gui = "bold" },
+	color = { fg = "#c0c2ce" },
 })
 
 ins_left({
@@ -151,12 +157,27 @@ ins_left({
 		local max_length = math.floor(vim.o.columns * 0.3)
 		local cwd_dir = vim.fn.fnamemodify(vim.fn.expand("%:h"), ":.")
 
+		if cwd_dir:match("^oil://") then
+			cwd_dir = cwd_dir:gsub("^oil://", "")
+			cwd_dir = cwd_dir:gsub("^" .. vim.pesc(vim.fn.getcwd()) .. "/", "")
+		end
+
+		if cwd_dir == vim.fn.getcwd() then
+			return ""
+		end
+
 		if cwd_dir:match("^/") then
 			cwd_dir = cwd_dir:sub(2)
 		end
 
+		local dirs = vim.split(cwd_dir, "/", { trimempty = true })
+
+		-- Check if shortening is needed
 		if #cwd_dir > max_length then
-			cwd_dir = "<" .. cwd_dir:sub(-max_length + 1)
+			while #cwd_dir > max_length and #dirs > 1 do
+				table.remove(dirs, 1) -- Remove the first directory
+				cwd_dir = ".../" .. table.concat(dirs, "/")
+			end
 		end
 
 		if cwd_dir ~= "" then
@@ -183,7 +204,8 @@ ins_left({
 
 		return filename
 	end,
-	color = { gui = "bold" },
+	--	color = { gui = "bold" },
+	color = { fg = "#c0c2ce" },
 	padding = { left = 0 },
 })
 
@@ -251,7 +273,7 @@ ins_right({
 		modified = { fg = colors.orange },
 		removed = { fg = colors.red },
 	},
-	cond = conditions.hide_in_width,
+  cond = conditions.hide_in_width,
 	padding = { left = 0, right = 2 },
 })
 

@@ -30,7 +30,7 @@ return {
 			pickers = {
 				find_files = {
 					previewer = false,
-					theme = "dropdown",
+					theme = "ivy",
 					find_command = { "rg", "--files", "--sortr=modified" },
 				},
 				live_grep = {
@@ -45,11 +45,25 @@ return {
 
 		local builtin = require("telescope.builtin")
 		vim.keymap.set("n", "<leader>fd", builtin.find_files, { desc = "Telescope find files" })
+		vim.keymap.set("n", "<leader>fe", function()
+			local directory = vim.fn.expand("%:p:h")
+
+			if directory:match("^oil://") then
+				directory = directory:gsub("^oil://", "")
+			end
+
+			local last_part = vim.fn.fnamemodify(directory, ":t")
+
+			builtin.find_files({
+				cwd = directory,
+				prompt_title = "Find Files (" .. last_part .. ")",
+			})
+		end, { desc = "Telescope find files" })
 		vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Telescope live grep" })
 		vim.keymap.set("n", "<leader>fc", function()
 			builtin.find_files({
 				cwd = vim.fn.stdpath("config"),
-				prompt_title = "Find Files (Config)",
+				prompt_title = "Find Files (Neovim Config)",
 			})
 		end)
 		vim.keymap.set("n", "<leader>fo", function()

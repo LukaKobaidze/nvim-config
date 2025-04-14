@@ -2,6 +2,7 @@ return {
 	"hrsh7th/nvim-cmp",
 	dependencies = {
 		"hrsh7th/cmp-buffer", -- Buffer completions
+		"hrsh7th/cmp-cmdline", -- Cmdline completions
 		"hrsh7th/cmp-path", -- Path completions
 		"hrsh7th/cmp-nvim-lsp", -- LSP completions
 		"hrsh7th/cmp-nvim-lua", -- Neovim Lua API completions
@@ -64,11 +65,20 @@ return {
 			-- Enable icons with lspkind
 			formatting = {
 				fields = { "kind", "abbr", "menu" },
-				format = function(_, vim_item)
-					local kind = vim_item.kind
-
+				format = function(entry, vim_item)
 					vim_item.kind = lspkind.symbolic(vim_item.kind, { mode = "symbol" })
-					vim_item.menu = " " .. kind
+
+					local path = entry.completion_item.detail
+
+					if path then
+						local max_length = 20
+						if #path > max_length then
+							vim_item.menu = " " .. path:sub(1, max_length)
+						else
+							vim_item.menu = " " .. entry.completion_item.detail
+						end
+					end
+
 					return vim_item
 				end,
 			},

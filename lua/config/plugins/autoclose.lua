@@ -1,5 +1,4 @@
 return {
-  "m4xshen/autoclose.nvim",
-  config = true
+	"m4xshen/autoclose.nvim",
+	config = true,
 }
-

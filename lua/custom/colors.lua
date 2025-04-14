@@ -1,3 +1,4 @@
+vim.cmd("colorscheme poimandres")
 local primary = "#c0c2ce"
 vim.opt.termguicolors = true
 vim.api.nvim_set_hl(0, "Cursor", { bg = "white", fg = "black" })
@@ -16,7 +17,6 @@ vim.api.nvim_set_hl(0, "TelescopePreviewTitle", { fg = primary, bg = "none" })
 vim.api.nvim_set_hl(0, "TelescopeMatching", { fg = "#ec5f67" })
 vim.api.nvim_set_hl(0, "TelescopeNormal", { fg = "#DDDDDD" })
 vim.api.nvim_set_hl(0, "TelescopeSelection", { fg = "#ffffff", bg = "none", bold = true })
-vim.api.nvim_set_hl(0, "TroubleCount", { fg = "#ffffff", bg = "none", bold = true })
 vim.api.nvim_set_hl(0, "FloatTitle", { fg = primary, bg = "none" })
 vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
 	primary = "rounded", -- Add rounded border
@@ -33,3 +33,4 @@ vim.api.nvim_set_hl(0, "LineNrBelow", { fg = "#506477" })
 vim.api.nvim_set_hl(0, "IndentLine", { fg = "#333333" })
 vim.api.nvim_set_hl(0, "IndentLineCurrent", { fg = "#4e4e4e" })
 vim.api.nvim_set_hl(0, "LspSignatureActiveParameter", { bg = primary, fg = "#000000" })
+vim.api.nvim_set_hl(0, "EyelinerPrimary", { bg = "none", underline = true })
