@@ -57,8 +57,8 @@ local toggle_terminal = function()
 	else
 		vim.api.nvim_win_hide(state.floating.win)
 	end
-	if vim.api.nvim_get_mode().mode ~= "t" then
-		vim.cmd("normal i")
+	if vim.api.nvim_win_is_valid(state.floating.win) then
+		vim.cmd("startinsert")
 	end
 end
 

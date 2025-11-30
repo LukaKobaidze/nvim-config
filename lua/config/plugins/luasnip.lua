@@ -14,10 +14,11 @@ return {
 		local filename = function()
 			return vim.fn.fnamemodify(vim.fn.expand("%"), ":t:r")
 		end
+
 		local directoryname = function()
-			local file_path = vim.fn.expand("%:p") -- Get the full absolute path of the current file
-			local dir_path = vim.fn.fnamemodify(file_path, ":h") -- Get the directory path
-			return vim.fn.fnamemodify(dir_path, ":t") -- Get the last directory name (tail of the directory path)
+			local file_path = vim.fn.expand("%:p")
+			local dir_path = vim.fn.fnamemodify(file_path, ":h")
+			return vim.fn.fnamemodify(dir_path, ":t")
 		end
 
 		ls.add_snippets("typescriptreact", {

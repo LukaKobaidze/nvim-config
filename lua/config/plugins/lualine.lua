@@ -1,44 +1,48 @@
 local colors = {
-	bg = "",
-	fg = "#cfbbbd",
-	fglow = "#9f8c8e",
-	yellow = "#ECBE7B",
-	cyan = "#008080",
-	darkblue = "#081633",
-	green = "#98be65",
-	orange = "#FF8800",
-	violet = "#a9a1e1",
-	magenta = "#c678dd",
-	blue = "#51afef",
-	red = "#ec5f67",
-	gray = "#c0c2ce",
+	bg = "none",
+	fg = "#BBAAE5", -- glow-ish purple
+	fglow = "#8A79B0", -- glow-ish purple
+
+	yellow = "#F2D48F", -- warm gold
+	cyan = "#8BE9FD", -- soft neon aqua
+	violet = "#CBA5FF", -- dreamy violet
+	magenta = "#FF9AD5", -- pink-magenta neon
+	blue = "#8AA8FF", -- purple-blue glow
+	gray = "#9FA4C1", -- soft steel purple-gray
+
+	warning = "#F3C984",
+	error = "#F28BAA",
 }
 
 local mode_color = function()
-	local colors = {
-		n = colors.red,
-		i = colors.blue,
-		v = colors.green,
-		[""] = colors.green,
-		V = colors.green,
-		c = colors.magenta,
-		no = colors.red,
-		s = colors.orange,
-		S = colors.orange,
-		[""] = colors.orange,
-		ic = colors.yellow,
-		R = colors.violet,
-		Rv = colors.violet,
-		cv = colors.red,
-		ce = colors.red,
-		r = colors.cyan,
-		rm = colors.cyan,
-		["r?"] = colors.cyan,
-		["!"] = colors.red,
-		t = colors.gray,
+	local mode = vim.fn.mode()
+
+	-- Soft ambience-purple palette
+	local map = {
+		n = "#9F93D1", -- normal: soft cozy purple
+		no = "#9F93D1",
+
+		i = "#75BFD7", -- insert: gentle aqua-lavender
+		ic = "#75BFD7",
+
+		v = "#BCA7E8", -- visual: muted lilac glow
+		V = "#BCA7E8",
+		[""] = "#BCA7E8",
+
+		c = "#D7CBA7", -- command: soft warm beige-purple
+		ce = "#D7CBA7",
+
+		R = "#DFA0C4", -- replace: soft pink-mauve
+		Rv = "#DFA0C4",
+		r = "#DFA0C4",
+		rm = "#DFA0C4",
+		["r?"] = "#DFA0C4",
+
+		t = "#8793C6", -- terminal: soft lavender-blue
+		["!"] = "#8793C6",
 	}
 
-	return colors[vim.fn.mode()]
+	return map[mode] or "#9F93D1" -- fallback: normal mode
 end
 
 local is_current_file_in_cwd = function()
@@ -80,8 +84,8 @@ local config = {
 			-- We are going to use lualine_c an lualine_x as left and
 			-- right section. Both are highlighted by c theme .  So we
 			-- are just setting default looks o statusline
-			normal = { c = { fg = colors.fg, bg = colors.bg } },
-			inactive = { c = { fg = colors.fg, bg = colors.bg } },
+			normal = { c = { fg = colors.fg } },
+			inactive = { c = { fg = colors.fg } },
 		},
 		globalstatus = true,
 	},
@@ -118,12 +122,14 @@ end
 
 ins_left({
 	function()
-		return vim.fn.mode()
+		local m = require("lualine.components.mode")()
+		return string.lower(m)
 	end,
+	separator = { right = "" },
 	color = function()
 		return { bg = mode_color(), fg = "#000000", gui = "bold" }
 	end,
-	padding = { left = 1, right = 1 },
+	padding = { left = 2, right = 1 },
 })
 
 ins_left({
@@ -139,8 +145,6 @@ ins_left({
 	end,
 	cond = is_current_file_in_cwd,
 	padding = { left = 0, right = 0 },
-	--color = { gui = "bold" },
-	color = { fg = "#c0c2ce" },
 })
 
 ins_left({
@@ -204,9 +208,7 @@ ins_left({
 
 		return filename
 	end,
-	--	color = { gui = "bold" },
-	color = { fg = "#c0c2ce" },
-	padding = { left = 0 },
+	padding = 0,
 })
 
 ins_left({
@@ -222,10 +224,11 @@ ins_left({
 
 		return { fg = color }
 	end,
+	padding = { left = 1, right = 2 },
 })
 
 ins_left({ "location" })
-ins_left({ "progress", color = { fg = colors.fg, gui = "bold" } })
+ins_left({ "progress", color = { gui = "bold" } })
 
 ins_left({
 	"diagnostics",
@@ -248,21 +251,10 @@ ins_left({
 -- Add components to right sections
 
 ins_right({
-	"filesize",
-	padding = { right = 2 },
-	cond = function()
-		return vim.o.columns > 90
+	function()
+		return " "
 	end,
-})
-
-ins_right({
-	"o:encoding", -- option component same as &encoding in viml
-	fmt = string.upper, -- I'm not sure why it's upper case either ;)
-	color = { gui = "bold" },
-	padding = { right = 2 },
-	cond = function()
-		return vim.o.columns > 90
-	end,
+	padding = { left = 0, right = 0 },
 })
 
 ins_right({
@@ -273,24 +265,23 @@ ins_right({
 		modified = { fg = colors.orange },
 		removed = { fg = colors.red },
 	},
-  cond = conditions.hide_in_width,
+	cond = conditions.hide_in_width,
 	padding = { left = 0, right = 2 },
 })
 
 ins_right({
 	function()
 		local branch = vim.b.gitsigns_status_dict and vim.b.gitsigns_status_dict.head
-
 		if not branch or branch == "" then
 			return ""
 		end
-
-		return branch .. " "
+		return " " .. branch
 	end,
+	separator = { left = "" },
 	color = function()
 		return { bg = mode_color(), fg = "#000000", gui = "bold" }
 	end,
-	padding = { left = 1, right = 1 },
+	padding = { left = 1, right = 2 },
 })
 
 local is_branch = function()
@@ -312,13 +303,13 @@ ins_right({
 
 ins_right({
 	function()
-		return "▊"
+		return "█"
 	end,
 	cond = is_branch,
 	color = function()
 		return { fg = mode_color() }
 	end,
-	padding = { left = 1 },
+	padding = { left = 1, right = 0 },
 })
 
 return {

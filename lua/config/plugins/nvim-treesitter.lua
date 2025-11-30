@@ -3,7 +3,7 @@ return {
   config = function()
    local nvim_treesitter = require('nvim-treesitter.configs')
    nvim_treesitter.setup({
-     ensure_installed = { "typescript", "tsx", "javascript" },
+     ensure_installed = { "typescript", "tsx", "javascript", "astro" },
      highlight = {
        enable = true,  -- Enable syntax highlighting
      },

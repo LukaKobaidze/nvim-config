@@ -7,14 +7,32 @@ return {
 		"hrsh7th/cmp-nvim-lsp", -- LSP completions
 		"hrsh7th/cmp-nvim-lua", -- Neovim Lua API completions
 		"saadparwaiz1/cmp_luasnip", -- Snippet completions
-		"L3MON4D3/LuaSnip", -- Snippet engine
 		"onsails/lspkind.nvim", -- Icons
+       {
+            "L3MON4D3/LuaSnip",
+            version = "2.*",
+            build = "make install_jsregexp",
+            dependencies = { "rafamadriz/friendly-snippets" },
+        },
 	},
 	config = function()
 		-- Configuration for nvim-cmp
 		local cmp = require("cmp")
 		local luasnip = require("luasnip")
 		local lspkind = require("lspkind")
+
+		local function get_doc_text(entry)
+			local doc = entry.completion_item.documentation
+			if not doc then
+				return nil
+			end
+			if type(doc) == "string" then
+				return doc
+			elseif type(doc) == "table" and doc.value then
+				return doc.value
+			end
+			return nil
+		end
 
 		cmp.setup({
 			window = {
@@ -81,6 +99,33 @@ return {
 
 					return vim_item
 				end,
+			},
+			sorting = {
+				priority_weight = 2,
+				comparators = {
+					-- Put required props first
+					function(entry1, entry2)
+						local doc1 = get_doc_text(entry1)
+						local doc2 = get_doc_text(entry2)
+
+						local is_required1 = doc1 and doc1:match("required")
+						local is_required2 = doc2 and doc2:match("required")
+
+						if is_required1 and not is_required2 then
+							return true
+						elseif not is_required1 and is_required2 then
+							return false
+						end
+						return nil
+					end,
+					cmp.config.compare.offset,
+					cmp.config.compare.exact,
+					cmp.config.compare.score,
+					cmp.config.compare.kind,
+					cmp.config.compare.sort_text,
+					cmp.config.compare.length,
+					cmp.config.compare.order,
+				},
 			},
 		})
 

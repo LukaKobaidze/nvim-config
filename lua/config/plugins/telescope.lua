@@ -16,7 +16,12 @@ return {
 			end,
 		})
 
-		require("telescope").setup({
+		local telescope = require("telescope")
+		local builtin = require("telescope.builtin")
+		local actions = require("telescope.actions")
+		local themes = require("telescope.themes")
+
+		telescope.setup({
 			defaults = {
 				path_display = function(_, path)
 					local tail = vim.fs.basename(path)
@@ -28,49 +33,60 @@ return {
 				end,
 			},
 			pickers = {
-				find_files = {
-					previewer = false,
-					theme = "ivy",
-					find_command = { "rg", "--files", "--sortr=modified" },
-				},
-				live_grep = {
-					theme = "ivy",
-				},
+				live_grep = { theme = "ivy" },
 			},
-			extensions = {
-				fzf = {},
-			},
+			extensions = { fzf = {} },
 		})
-		require("telescope").load_extension("fzf")
+		telescope.load_extension("fzf")
 
-		local builtin = require("telescope.builtin")
-		vim.keymap.set("n", "<leader>fd", builtin.find_files, { desc = "Telescope find files" })
+		local function find_files_dropdown(opts)
+			opts = opts or {}
+			opts = vim.tbl_deep_extend(
+				"force",
+				opts,
+				themes.get_dropdown({
+					layout_config = {
+						width = 0.5,
+						height = 0.5,
+					},
+					previewer = false,
+					find_command = { "rg", "--files", "--sortr=modified" },
+					sorting_strategy = "ascending", -- shows recent first
+				})
+			)
+			builtin.find_files(opts)
+		end
+
+		vim.keymap.set("n", "<leader>fd", function()
+			find_files_dropdown()
+		end, { desc = "Telescope find files" })
+
 		vim.keymap.set("n", "<leader>fe", function()
 			local directory = vim.fn.expand("%:p:h")
-
 			if directory:match("^oil://") then
 				directory = directory:gsub("^oil://", "")
 			end
-
 			local last_part = vim.fn.fnamemodify(directory, ":t")
-
-			builtin.find_files({
+			find_files_dropdown({
 				cwd = directory,
 				prompt_title = "Find Files (" .. last_part .. ")",
 			})
 		end, { desc = "Telescope find files" })
-		vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Telescope live grep" })
+
 		vim.keymap.set("n", "<leader>fc", function()
-			builtin.find_files({
+			find_files_dropdown({
 				cwd = vim.fn.stdpath("config"),
 				prompt_title = "Find Files (Neovim Config)",
 			})
 		end)
+
 		vim.keymap.set("n", "<leader>fo", function()
-			builtin.find_files({
+			find_files_dropdown({
 				cwd = "~/Documents/obsidian-notes/daily-notes",
 				prompt_title = "Find Files (Obsidian)",
 			})
 		end)
+
+		vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Telescope live grep" })
 	end,
 }

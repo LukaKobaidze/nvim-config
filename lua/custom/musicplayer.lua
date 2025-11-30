@@ -1,4 +1,3 @@
-
 local state = {
 	floating = {
 		buf = -1,
@@ -32,7 +31,7 @@ local function create_floating_window(opts)
 		row = row,
 		style = "minimal", -- No borders or extra UI elements
 		border = "rounded",
-		title = " AI ",
+		title = " Music Player ",
 		title_pos = "center",
 	}
 
@@ -52,15 +51,15 @@ local toggle_terminal = function()
 			vim.cmd.terminal()
 
 			local terminal_job_id = vim.b.terminal_job_id
-			local command = "tgpt --provider duckduckgo --model gpt-4o-mini --interactive\n"
+			local command = "rmpc\n"
 			vim.api.nvim_chan_send(terminal_job_id, command)
 		end
 	else
 		vim.api.nvim_win_hide(state.floating.win)
 	end
 
-	if vim.api.nvim_get_mode().mode ~= "t" then
-		vim.cmd("normal i")
+	if vim.api.nvim_win_is_valid(state.floating.win) then
+		vim.cmd("startinsert")
 	end
 end
 
@@ -68,4 +67,4 @@ end
 -- Create a floating window with default dimensions
 vim.api.nvim_create_user_command("Floaterminal", toggle_terminal, {})
 
-vim.keymap.set("n", "<leader>ai", toggle_terminal)
+vim.keymap.set("n", "<leader>mp", toggle_terminal)
