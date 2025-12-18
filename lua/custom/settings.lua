@@ -11,7 +11,15 @@ vim.opt.pumheight = 10
 vim.opt.laststatus = 3
 vim.opt.winborder = "double"
 vim.opt.guicursor:append("c:ver25")
-vim.opt.fillchars:append({ vert = "║" })
+vim.opt.fillchars:append({
+	vert = "║",
+	horiz = "═",
+	horizup = "╩",
+	horizdown = "╦",
+	vertleft = "╣",
+	vertright = "╠",
+	verthoriz = "╬",
+})
 vim.opt.guicursor = "a:block-blinkon0"
 
 vim.diagnostic.config({
