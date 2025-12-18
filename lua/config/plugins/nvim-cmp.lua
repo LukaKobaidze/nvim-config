@@ -7,19 +7,17 @@ return {
 		"hrsh7th/cmp-nvim-lsp", -- LSP completions
 		"hrsh7th/cmp-nvim-lua", -- Neovim Lua API completions
 		"saadparwaiz1/cmp_luasnip", -- Snippet completions
-		"onsails/lspkind.nvim", -- Icons
-       {
-            "L3MON4D3/LuaSnip",
-            version = "2.*",
-            build = "make install_jsregexp",
-            dependencies = { "rafamadriz/friendly-snippets" },
-        },
+		{
+			"L3MON4D3/LuaSnip",
+			version = "2.*",
+			build = "make install_jsregexp",
+			dependencies = { "rafamadriz/friendly-snippets" },
+		},
 	},
 	config = function()
 		-- Configuration for nvim-cmp
 		local cmp = require("cmp")
 		local luasnip = require("luasnip")
-		local lspkind = require("lspkind")
 
 		local function get_doc_text(entry)
 			local doc = entry.completion_item.documentation
@@ -37,10 +35,10 @@ return {
 		cmp.setup({
 			window = {
 				completion = {
-					border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
+					border = { "╔", "═", "╗", "║", "╝", "═", "╚", "║" },
 				},
 				documentation = {
-					border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
+					border = { "╔", "═", "╗", "║", "╝", "═", "╚", "║" },
 				},
 			},
 			snippet = {
@@ -80,12 +78,9 @@ return {
 				{ name = "buffer" }, -- Buffer completions
 				{ name = "path" }, -- Path completions
 			}),
-			-- Enable icons with lspkind
 			formatting = {
-				fields = { "kind", "abbr", "menu" },
+				fields = { "abbr", "menu" },
 				format = function(entry, vim_item)
-					vim_item.kind = lspkind.symbolic(vim_item.kind, { mode = "symbol" })
-
 					local path = entry.completion_item.detail
 
 					if path then

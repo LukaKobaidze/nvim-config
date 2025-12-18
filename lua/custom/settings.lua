@@ -9,13 +9,17 @@ vim.opt.expandtab = true
 vim.opt.smartindent = true
 vim.opt.pumheight = 10
 vim.opt.laststatus = 3
+vim.opt.winborder = "double"
+vim.opt.guicursor:append("c:ver25")
+vim.opt.fillchars:append({ vert = "║" })
+vim.opt.guicursor = "a:block-blinkon0"
 
 vim.diagnostic.config({
 	virtual_text = false,
 	float = {
 		focusable = false,
 		style = "minimal",
-		border = "rounded",
+		border = "double",
 		source = "always",
 		header = "",
 		prefix = "",

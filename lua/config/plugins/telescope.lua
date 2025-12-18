@@ -23,6 +23,51 @@ return {
 
 		telescope.setup({
 			defaults = {
+				color_devicons = false,
+				prompt_prefix = " > ",
+				selection_caret = " > ",
+				entry_prefix = "   ",
+
+				border = {
+					prompt = { 1, 1, 1, 1 },
+					results = { 1, 1, 1, 1 },
+					preview = { 1, 1, 1, 1 },
+				},
+
+				borderchars = {
+					prompt = {
+						" ", -- top
+						" ", -- right
+						"═", -- bottom
+						"║", -- left
+						"║", -- top_left (connecting side)
+						" ", -- top_right
+						"═", -- bottom_right
+						"╚", -- bottom_left
+					},
+
+					results = {
+						"═", -- top
+						" ", -- right
+						" ", -- bottom
+						"║", -- left
+						"╔", -- top_left
+						"═", -- top_right
+						" ", -- bottom_right
+						"║", -- bottom_left (connecting side)
+					},
+
+					preview = {
+						"═", -- top
+						"║", -- right
+						"═", -- bottom
+						"║", -- left
+						"╦", -- top_left (double tee)
+						"╗", -- top_right
+						"╝", -- bottom_right
+						"╩", -- bottom_left
+					},
+				},
 				path_display = function(_, path)
 					local tail = vim.fs.basename(path)
 					local parent = vim.fs.dirname(path)
@@ -45,6 +90,37 @@ return {
 				"force",
 				opts,
 				themes.get_dropdown({
+					disable_devicons = true,
+
+					border = {
+						prompt = { 1, 1, 1, 1 },
+						results = { 1, 1, 1, 1 },
+					},
+
+					borderchars = {
+						prompt = {
+							"═", -- top
+							"║", -- right
+							"═", -- bottom
+							"║", -- left
+							"╔", -- top_left
+							"╗", -- top_right
+							"║", -- bottom_right  (straight, no corner)
+							"║", -- bottom_left   (straight, no corner)
+						},
+
+						results = {
+							"═", -- top            (straight continuation)
+							"║", -- right
+							"═", -- bottom
+							"║", -- left
+							"║", -- top_left       (NO corner)
+							"║", -- top_right      (NO corner)
+							"╝", -- bottom_right
+							"╚", -- bottom_left
+						},
+					},
+
 					layout_config = {
 						width = 0.5,
 						height = 0.5,
@@ -52,13 +128,15 @@ return {
 					previewer = false,
 					find_command = { "rg", "--files", "--sortr=modified" },
 					sorting_strategy = "ascending", -- shows recent first
+					show_line = false,
+					show_column = false,
 				})
 			)
 			builtin.find_files(opts)
 		end
 
 		vim.keymap.set("n", "<leader>fd", function()
-			find_files_dropdown()
+			find_files_dropdown({ prompt_title = "FIND FILES" })
 		end, { desc = "Telescope find files" })
 
 		vim.keymap.set("n", "<leader>fe", function()
@@ -69,24 +147,71 @@ return {
 			local last_part = vim.fn.fnamemodify(directory, ":t")
 			find_files_dropdown({
 				cwd = directory,
-				prompt_title = "Find Files (" .. last_part .. ")",
+				prompt_title = "FIND FILES (" .. string.upper(last_part) .. ")",
 			})
 		end, { desc = "Telescope find files" })
 
 		vim.keymap.set("n", "<leader>fc", function()
 			find_files_dropdown({
 				cwd = vim.fn.stdpath("config"),
-				prompt_title = "Find Files (Neovim Config)",
+				prompt_title = "FIND FILES (NEOVIM CONFIG)",
 			})
 		end)
 
 		vim.keymap.set("n", "<leader>fo", function()
 			find_files_dropdown({
 				cwd = "~/Documents/obsidian-notes/daily-notes",
-				prompt_title = "Find Files (Obsidian)",
+				prompt_title = "FIND FILES (OBSIDIAN)",
 			})
 		end)
 
-		vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Telescope live grep" })
+		vim.keymap.set("n", "<leader>fg", function()
+			builtin.live_grep({
+				prompt_title = "LIVE GREP",
+				results_title = false,
+				preview_title = "PREVIEW",
+
+				border = {
+					prompt = { 1, 1, 1, 1 },
+					preview = { 1, 1, 1, 1 },
+					results = { 1, 1, 1, 1 },
+				},
+
+				borderchars = {
+					prompt = {
+						"═", -- top
+						" ", -- right
+						" ", -- bottom
+						" ", -- left
+						"═", -- top_left
+						"═", -- top_right
+						" ", -- bottom_right
+						" ", -- bottom_left
+					},
+
+					results = {
+						" ", -- top
+						" ", -- right
+						" ", -- bottom
+						" ", -- left
+						" ", -- top_left
+						" ", -- top_right
+						" ", -- bottom_right
+						" ", -- bottom_left
+					},
+
+					preview = {
+						"═", -- top
+						"║", -- right
+						"═", -- bottom
+						"║", -- left
+						"╔", -- top_left
+						"╗", -- top_right
+						"╝", -- bottom_right
+						"╚", -- bottom_left
+					},
+				},
+			})
+		end, { desc = "Telescope live grep" })
 	end,
 }

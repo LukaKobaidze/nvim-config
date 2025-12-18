@@ -1,59 +1,19 @@
 local colors = {
-	bg = "none",
-	fg = "#BBAAE5", -- glow-ish purple
-	fglow = "#8A79B0", -- glow-ish purple
-
-	yellow = "#F2D48F", -- warm gold
-	cyan = "#8BE9FD", -- soft neon aqua
-	violet = "#CBA5FF", -- dreamy violet
-	magenta = "#FF9AD5", -- pink-magenta neon
-	blue = "#8AA8FF", -- purple-blue glow
-	gray = "#9FA4C1", -- soft steel purple-gray
-
-	warning = "#F3C984",
-	error = "#F28BAA",
+	bg = "#000000",
+	fg = "#cccccc",
+	fg_dim = "#7a7a7a",
+	fg_muted = "#555555",
+	accent = "#9f4050",
 }
 
-local mode_color = function()
-	local mode = vim.fn.mode()
-
-	-- Soft ambience-purple palette
-	local map = {
-		n = "#9F93D1", -- normal: soft cozy purple
-		no = "#9F93D1",
-
-		i = "#75BFD7", -- insert: gentle aqua-lavender
-		ic = "#75BFD7",
-
-		v = "#BCA7E8", -- visual: muted lilac glow
-		V = "#BCA7E8",
-		[""] = "#BCA7E8",
-
-		c = "#D7CBA7", -- command: soft warm beige-purple
-		ce = "#D7CBA7",
-
-		R = "#DFA0C4", -- replace: soft pink-mauve
-		Rv = "#DFA0C4",
-		r = "#DFA0C4",
-		rm = "#DFA0C4",
-		["r?"] = "#DFA0C4",
-
-		t = "#8793C6", -- terminal: soft lavender-blue
-		["!"] = "#8793C6",
-	}
-
-	return map[mode] or "#9F93D1" -- fallback: normal mode
-end
-
 local is_current_file_in_cwd = function()
-	local cwd = vim.fn.getcwd() -- Get the current working directory
-	local file_path = vim.fn.expand("%:p") -- Get the full absolute path of the current file
+	local cwd = vim.fn.getcwd()
+	local file_path = vim.fn.expand("%:p")
 
 	if file_path:match("^oil://") then
 		file_path = file_path:gsub("^oil://", "")
 	end
 
-	-- Ensure both paths end with a slash for accurate comparison
 	cwd = cwd:gsub("/$", "") .. "/"
 	file_path = file_path:gsub("/$", "") .. "/"
 
@@ -74,33 +34,25 @@ local conditions = {
 	end,
 }
 
--- Config
 local config = {
 	options = {
-		-- Disable sections and component separators
 		component_separators = "",
 		section_separators = "",
 		theme = {
-			-- We are going to use lualine_c an lualine_x as left and
-			-- right section. Both are highlighted by c theme .  So we
-			-- are just setting default looks o statusline
 			normal = { c = { fg = colors.fg } },
 			inactive = { c = { fg = colors.fg } },
 		},
 		globalstatus = true,
 	},
 	sections = {
-		-- these are to remove the defaults
 		lualine_a = {},
 		lualine_b = {},
 		lualine_y = {},
 		lualine_z = {},
-		-- These will be filled later
 		lualine_c = {},
 		lualine_x = {},
 	},
 	inactive_sections = {
-		-- these are to remove the defaults
 		lualine_a = {},
 		lualine_b = {},
 		lualine_y = {},
@@ -110,12 +62,10 @@ local config = {
 	},
 }
 
--- Inserts a component in lualine_c at left section
 local function ins_left(component)
 	table.insert(config.sections.lualine_c, component)
 end
 
--- Inserts a component in lualine_x at right section
 local function ins_right(component)
 	table.insert(config.sections.lualine_x, component)
 end
@@ -123,13 +73,12 @@ end
 ins_left({
 	function()
 		local m = require("lualine.components.mode")()
-		return string.lower(m)
+		return m
 	end,
-	separator = { right = "" },
 	color = function()
-		return { bg = mode_color(), fg = "#000000", gui = "bold" }
+		return { bg = colors.accent, fg = colors.bg, gui = "bold" }
 	end,
-	padding = { left = 2, right = 1 },
+	padding = 2,
 })
 
 ins_left({
@@ -152,7 +101,7 @@ ins_left({
 		return "/"
 	end,
 	padding = { left = 0, right = 0 },
-	color = { fg = colors.fglow },
+	color = { fg = colors.fg_dim },
 	cond = is_current_file_in_cwd,
 })
 
@@ -176,10 +125,9 @@ ins_left({
 
 		local dirs = vim.split(cwd_dir, "/", { trimempty = true })
 
-		-- Check if shortening is needed
 		if #cwd_dir > max_length then
 			while #cwd_dir > max_length and #dirs > 1 do
-				table.remove(dirs, 1) -- Remove the first directory
+				table.remove(dirs, 1)
 				cwd_dir = ".../" .. table.concat(dirs, "/")
 			end
 		end
@@ -190,7 +138,7 @@ ins_left({
 
 		return cwd_dir
 	end,
-	color = { fg = colors.fglow },
+	color = { fg = colors.fg_dim },
 	padding = { left = 0, right = 0 },
 	cond = function()
 		return vim.o.columns > 90
@@ -208,47 +156,44 @@ ins_left({
 
 		return filename
 	end,
-	padding = 0,
+	padding = { left = 0, right = 1 },
 })
 
 ins_left({
 	function()
-		local devicons = require("nvim-web-devicons")
-		local icon = devicons.get_icon(vim.fn.expand("%:t")) or devicons.get_icon_by_filetype(vim.bo.filetype) or ""
-
-		return icon
+		return vim.fn.line(".") .. ":" .. vim.fn.col(".")
 	end,
-	color = function()
-		local filename = vim.fn.expand("%:t")
-		local _, color = require("nvim-web-devicons").get_icon_color(filename)
-
-		return { fg = color }
-	end,
-	padding = { left = 1, right = 2 },
+	color = { gui = "bold" },
+	padding = { left = 2, right = 0 },
 })
 
-ins_left({ "location" })
-ins_left({ "progress", color = { gui = "bold" } })
+ins_left({
+	function()
+		return "/" .. vim.fn.line("$") .. ":" .. vim.fn.col("$")
+	end,
+	color = { fg = colors.fg_dim, gui = "bold" },
+	padding = { left = 0, right = 2 },
+})
 
 ins_left({
 	"diagnostics",
 	sources = { "nvim_diagnostic" },
 	symbols = { error = " ", warn = " ", info = " " },
 	diagnostics_color = {
-		error = { fg = colors.red },
-		warn = { fg = colors.yellow },
-		info = { fg = colors.cyan },
+		error = { fg = colors.accent },
+		warn = { fg = colors.fg_dim },
+		info = { fg = colors.fg_muted },
 	},
 })
 
--- Insert mid section.
+-- Mid section
 ins_left({
 	function()
 		return "%="
 	end,
 })
 
--- Add components to right sections
+-- Right section
 
 ins_right({
 	function()
@@ -261,9 +206,9 @@ ins_right({
 	"diff",
 	symbols = { added = "󰐖 ", modified = "󰦓 ", removed = "󰍵 " },
 	diff_color = {
-		added = { fg = colors.green },
-		modified = { fg = colors.orange },
-		removed = { fg = colors.red },
+		added = { fg = colors.fg },
+		modified = { fg = colors.fg_dim },
+		removed = { fg = colors.accent },
 	},
 	cond = conditions.hide_in_width,
 	padding = { left = 0, right = 2 },
@@ -275,13 +220,12 @@ ins_right({
 		if not branch or branch == "" then
 			return ""
 		end
-		return " " .. branch
+		return "[" .. string.upper(branch) .. "]"
 	end,
-	separator = { left = "" },
 	color = function()
-		return { bg = mode_color(), fg = "#000000", gui = "bold" }
+		return { bg = colors.accent, fg = colors.bg, gui = "bold" }
 	end,
-	padding = { left = 1, right = 2 },
+	padding = 1,
 })
 
 local is_branch = function()
@@ -296,25 +240,24 @@ end
 ins_right({
 	"fileformat",
 	fmt = string.upper,
-	icons_enabled = false, -- I think icons are cool but Eviline doesn't have them. sigh
+	icons_enabled = false,
 	cond = is_branch,
-	color = { fg = colors.green, gui = "bold" },
+	color = { fg = colors.fg, gui = "bold" },
 })
 
 ins_right({
 	function()
-		return "█"
+		return "█"
 	end,
 	cond = is_branch,
 	color = function()
-		return { fg = mode_color() }
+		return { fg = colors.accent }
 	end,
 	padding = { left = 1, right = 0 },
 })
 
 return {
 	"nvim-lualine/lualine.nvim",
-	dependencies = { "nvim-tree/nvim-web-devicons" },
 	config = function()
 		require("lualine").setup(config)
 	end,

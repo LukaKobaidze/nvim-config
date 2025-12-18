@@ -1,7 +1,6 @@
 require("config.lazy")
 require("custom.settings")
 require("custom.floaterminal")
-require("custom.musicplayer")
 require("custom.keymaps")
 require("custom.colors")
 

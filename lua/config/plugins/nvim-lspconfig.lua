@@ -7,7 +7,6 @@ return {
     local cmp_nvim_lsp = require("cmp_nvim_lsp")
     local capabilities = cmp_nvim_lsp.default_capabilities()
 
-    -- same <leader>gf mapping you had
     vim.keymap.set("n", "<leader>gf", function()
       local component = vim.fn.expand("<cword>")
       local buf_lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
@@ -150,7 +149,6 @@ return {
       vim.cmd("/\\v(function|const|export).*" .. component)
     end, { noremap = true, silent = true })
 
-    -- per-server config using native 0.11 API
     vim.lsp.config("ts_ls", {
       capabilities = capabilities,
       on_attach = function(client, bufnr)
@@ -168,7 +166,6 @@ return {
     vim.lsp.config("astro", {
       capabilities = capabilities,
       filetypes = { "astro" },
-      -- if you had a global `on_attach`, you can still add it here
     })
 
     vim.lsp.enable({ "ts_ls", "cssls", "astro" })
