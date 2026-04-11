@@ -75,12 +75,13 @@ end
 ins_left({
 	function()
 		local m = require("lualine.components.mode")()
-		return m
+		return string.lower(m)
 	end,
 	color = function()
 		return { bg = colors.accent, fg = colors.bg, gui = "bold" }
 	end,
-	padding = 2,
+	padding = { left = 2, right = 1 },
+	separator = { right = "" },
 })
 
 ins_left({
@@ -210,7 +211,7 @@ ins_right({
 		if not branch or branch == "" then
 			return ""
 		end
-		return "[" .. string.upper(branch) .. "]"
+		return "[" .. branch .. "]"
 	end,
 	color = function()
 		return { gui = "bold" }
@@ -223,7 +224,8 @@ ins_right({
 		return string.format("%d / %d", vim.fn.line("."), vim.fn.line("$"))
 	end,
 	color = { bg = colors.accent, fg = colors.bg, gui = "bold" },
-	padding = { left = 2, right = 2 },
+	padding = { left = 1, right = 2 },
+	separator = { left = "" },
 })
 
 return {

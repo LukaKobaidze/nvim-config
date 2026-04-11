@@ -27,8 +27,8 @@ local function create_floating_window(opts)
 		col = col,
 		row = row,
 		style = "minimal",
-		border = "double",
-		title = " TERMINAL ",
+		border = "rounded",
+		title = " terminal ",
 		title_pos = "center",
 	}
 

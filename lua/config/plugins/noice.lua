@@ -2,29 +2,17 @@ return {
 	"folke/noice.nvim",
 	event = "VeryLazy",
 	opts = {
-		views = {
-			popup = {
-				border = {
-					style = "double",
-				},
-			},
-			cmdline_popup = {
-				border = {
-					style = "double",
-				},
-			},
-		},
 		cmdline = {
 			format = {
 				cmdline = {
 					icon = ">",
-					title = " CMDLINE ",
+					title = " cmdline ",
 				},
-				search_down = { icon = "/", title = " SEARCH DOWN " },
-				search_up = { icon = "/", title = " SEARCH UP " },
+				search_down = { icon = "/", title = " search down " },
+				search_up = { icon = "/", title = " search up " },
 				help = {
 					icon = "?",
-					title = " HELP ",
+					title = " help ",
 				},
 			},
 		},
