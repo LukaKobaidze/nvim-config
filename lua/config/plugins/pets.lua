@@ -15,7 +15,7 @@ return {
 			pattern = "VeryLazy",
 			callback = function()
 				vim.defer_fn(function()
-					vim.cmd("PetsNewCustom dog black doggy")
+					-- vim.cmd("PetsNewCustom dog black doggy")
 				end, 50)
 			end,
 		})

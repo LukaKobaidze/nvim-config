@@ -1,9 +1,11 @@
+local colorValues = require("custom.color_values")
+
 local colors = {
 	bg = "#000000",
 	fg = "#cccccc",
 	fg_dim = "#7a7a7a",
 	fg_muted = "#555555",
-	accent = "#9f4050",
+	accent = colorValues.primary,
 }
 
 local is_current_file_in_cwd = function()
@@ -92,7 +94,9 @@ ins_left({
 	function()
 		return vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
 	end,
-	cond = is_current_file_in_cwd,
+	cond = function()
+		return is_current_file_in_cwd() and vim.o.columns > 90
+	end,
 	padding = { left = 0, right = 0 },
 })
 
@@ -102,7 +106,9 @@ ins_left({
 	end,
 	padding = { left = 0, right = 0 },
 	color = { fg = colors.fg_dim },
-	cond = is_current_file_in_cwd,
+	cond = function()
+		return is_current_file_in_cwd() and vim.o.columns > 90
+	end,
 })
 
 ins_left({
@@ -160,22 +166,6 @@ ins_left({
 })
 
 ins_left({
-	function()
-		return vim.fn.line(".") .. ":" .. vim.fn.col(".")
-	end,
-	color = { gui = "bold" },
-	padding = { left = 2, right = 0 },
-})
-
-ins_left({
-	function()
-		return "/" .. vim.fn.line("$") .. ":" .. vim.fn.col("$")
-	end,
-	color = { fg = colors.fg_dim, gui = "bold" },
-	padding = { left = 0, right = 2 },
-})
-
-ins_left({
 	"diagnostics",
 	sources = { "nvim_diagnostic" },
 	symbols = { error = " ", warn = " ", info = " " },
@@ -211,7 +201,7 @@ ins_right({
 		removed = { fg = colors.accent },
 	},
 	cond = conditions.hide_in_width,
-	padding = { left = 0, right = 2 },
+	padding = 1,
 })
 
 ins_right({
@@ -223,37 +213,17 @@ ins_right({
 		return "[" .. string.upper(branch) .. "]"
 	end,
 	color = function()
-		return { bg = colors.accent, fg = colors.bg, gui = "bold" }
+		return { gui = "bold" }
 	end,
-	padding = 1,
-})
-
-local is_branch = function()
-	local branch = vim.b.gitsigns_status_dict and vim.b.gitsigns_status_dict.head
-
-	if branch then
-		return false
-	end
-	return true
-end
-
-ins_right({
-	"fileformat",
-	fmt = string.upper,
-	icons_enabled = false,
-	cond = is_branch,
-	color = { fg = colors.fg, gui = "bold" },
+	padding = { left = 1, right = 2 },
 })
 
 ins_right({
 	function()
-		return "█"
+		return string.format("%d / %d", vim.fn.line("."), vim.fn.line("$"))
 	end,
-	cond = is_branch,
-	color = function()
-		return { fg = colors.accent }
-	end,
-	padding = { left = 1, right = 0 },
+	color = { bg = colors.accent, fg = colors.bg, gui = "bold" },
+	padding = { left = 2, right = 2 },
 })
 
 return {

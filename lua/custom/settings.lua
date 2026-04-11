@@ -1,5 +1,6 @@
 vim.wo.number = true
 vim.wo.relativenumber = true
+vim.opt.signcolumn = "yes"
 vim.opt.termguicolors = true
 vim.opt.hlsearch = false
 vim.o.fillchars = "eob: "
